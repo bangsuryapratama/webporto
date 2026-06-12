@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surya Pratama — Software Developer & Web Architect</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['Syne', 'sans-serif'],
+                        editorial: ['"Instrument Serif"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            white: '#FFFFFF',
+                            paper: '#F5F5F3',
+                            light: '#EAEAEA',
+                            black: '#0A0A0A',
+                            blue: '#0029FF',
+                            blueHover: '#001FD1',
+                            border: '#0A0A0A'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #F5F5F3; }
+        ::-webkit-scrollbar-thumb { background: #0029FF; border-radius: 3px; }
+
+        /* ===== GRID BACKGROUND ===== */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(10,10,10,0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(10,10,10,0.04) 1px, transparent 1px);
+        }
+
+        /* ===== SHADOWS ===== */
+        .solid-shadow-sm  { box-shadow: 3px 3px 0px 0px #0A0A0A; }
+        .solid-shadow     { box-shadow: 6px 6px 0px 0px #0A0A0A; }
+        .solid-shadow-blue{ box-shadow: 6px 6px 0px 0px #0029FF; }
+        .solid-shadow-lg  { box-shadow: 10px 10px 0px 0px #0A0A0A; }
+
+        /* ===== FLOAT ANIMATIONS ===== */
+        @keyframes float-gentle {
+            0%,100% { transform: translateY(0px) rotate(-1deg); }
+            50%      { transform: translateY(-6px) rotate(1deg); }
+        }
+        .animate-float-1 { animation: float-gentle 4s ease-in-out infinite; }
+        .animate-float-2 { animation: float-gentle 5s ease-in-out infinite 0.5s; }
+        .animate-float-3 { animation: float-gentle 6s ease-in-out infinite 1s; }
+
+        /* ===== MARQUEE ===== */
+        @keyframes marquee { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+        .animate-marquee { animation: marquee 20s linear infinite; }
+
+        /* ===== CUSTOM CURSOR ===== */
+        .custom-cursor {
+            width: 8px; height: 8px;
+            background-color: #0029FF;
+            position: fixed; transform: translate(-50%,-50%);
+            pointer-events: none; z-index: 10000; border-radius: 50%;
+        }
+        .custom-cursor-ring {
+            width: 28px; height: 28px;
+            border: 1px solid #0A0A0A;
+            position: fixed; transform: translate(-50%,-50%);
+            pointer-events: none; z-index: 9999; border-radius: 50%;
+            transition: transform 0.08s ease-out;
+        }
+
+        /* ===== TECH STACK PILL ===== */
+        .tech-pill {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 10px 4px 6px;
+            border: 1.5px solid #0A0A0A;
+            background: #fff;
+            font-size: 10px; font-weight: 700;
+            font-family: monospace; text-transform: uppercase; letter-spacing: 0.05em;
+            transition: all 0.15s ease;
+        }
+        .tech-pill:hover { background: #0029FF; color: #fff; border-color: #0029FF; }
+        .tech-pill:hover svg, .tech-pill:hover img { filter: brightness(0) invert(1); }
+        .tech-pill img { width: 16px; height: 16px; object-fit: contain; }
+
+        /* ===== SKILL CARD HOVER ===== */
+        .skill-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .skill-card:hover {
+            transform: translate(2px, 2px);
+            box-shadow: none !important;
+        }
+
+        /* ===== RESPONSIVE HERO FIX ===== */
+        @media (max-width: 640px) {
+            .hero-headline { font-size: clamp(2rem, 10vw, 4rem); }
+        }
+
+        /* ===== LINE CLAMP ===== */
+        .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
+        .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    </style>
+</head>
+<body class="bg-brand-paper bg-grid text-brand-black font-sans antialiased overflow-x-hidden selection:bg-brand-blue selection:text-white">
+
+    <!-- Custom Cursor (Desktop Only) -->
+    <div id="cursor" class="custom-cursor hidden md:block"></div>
+    <div id="cursor-ring" class="custom-cursor-ring hidden md:block"></div>
+
+    <!-- ===================== HEADER ===================== -->
+    <header class="w-full fixed top-0 z-50 border-b border-brand-black bg-brand-paper/95 backdrop-blur-md py-3 px-4 md:px-12">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="font-display font-extrabold text-base md:text-lg tracking-tight uppercase">
+                Surya<span class="text-brand-blue">*</span>studio
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest">
+                <a href="#about"      class="hover:text-brand-blue transition-colors">About</a>
+                <a href="#services"   class="hover:text-brand-blue transition-colors">Skills</a>
+                <a href="#experience" class="hover:text-brand-blue transition-colors">Experience</a>
+                <a href="#projects"   class="hover:text-brand-blue transition-colors">Works</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <a href="#contact" class="hidden sm:inline-flex px-5 py-2 bg-brand-black text-white hover:bg-brand-blue transition-all text-[11px] font-bold uppercase tracking-wider border border-brand-black solid-shadow-sm">
+                    Contact Me
+                </a>
+                <button id="mobile-nav-trigger" class="md:hidden p-2 hover:text-brand-blue transition-colors">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===================== MOBILE MENU ===================== -->
+    <div id="mobile-menu" class="hidden fixed inset-0 z-[60] bg-brand-paper flex flex-col justify-center items-center gap-8 text-2xl font-display uppercase tracking-wider">
+        <button id="mobile-nav-close" class="absolute top-5 right-5 p-2 text-brand-black hover:text-brand-blue">
+            <i data-lucide="x" class="w-7 h-7"></i>
+        </button>
+        <a href="#about"      class="mobile-link hover:text-brand-blue transition-colors">About</a>
+        <a href="#services"   class="mobile-link hover:text-brand-blue transition-colors">Skills</a>
+        <a href="#experience" class="mobile-link hover:text-brand-blue transition-colors">Experience</a>
+        <a href="#projects"   class="mobile-link hover:text-brand-blue transition-colors">Works</a>
+        <a href="#contact"    class="mobile-link px-8 py-3 bg-brand-black text-white text-sm font-bold uppercase tracking-widest solid-shadow-sm">Hubungi Saya</a>
+    </div>
+
+    <!-- ===================== HERO ===================== -->
+    <section id="about" class="relative pt-20 pb-12 md:pt-32 md:pb-20 px-4 md:px-12 max-w-7xl mx-auto overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+
+            <!-- Left: Copy -->
+            <div class="lg:col-span-7 space-y-5 order-2 lg:order-1">
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-brand-white border border-brand-black text-[9px] font-mono uppercase tracking-widest font-semibold solid-shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-brand-blue animate-ping"></span>
+                    SOFTWARE DEVELOPER AT INDOTEKNISI
+                </div>
+
+                <!-- Headline -->
+                <h1 class="hero-headline font-display font-extrabold tracking-tight leading-[1.05] text-brand-black uppercase text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
+                    Hy! I Am <br>
+                    <span class="text-brand-blue font-editorial italic font-normal normal-case tracking-normal">Surya</span> Pratama
+                </h1>
+
+                <p class="text-sm text-stone-700 leading-relaxed max-w-xl font-medium">
+                    Software Developer di <span class="text-brand-blue font-bold">IndoTeknisi</span> &amp; Lulusan Rekayasa Perangkat Lunak dari <span class="text-brand-black font-bold border-b-2 border-brand-blue">SMK Assalaam Bandung</span>. Berkomitmen merancang kode bersih, backend berkinerja tinggi, dan solusi digital kreatif.
+                </p>
+
+                <!-- Tech Stack Pills -->
+                <div class="flex flex-wrap gap-2 pt-1">
+                    <span class="tech-pill"><img src="./img/Laravel.png" alt="Laravel"></span>
+                    <span class="tech-pill"><img src="./img/php.png" alt="PHP"></span>
+                    <span class="tech-pill"><img src="./img/mysql.png" alt="MySQL"></span>
+                    <span class="tech-pill"><img src="./img/htmlcssjs.png" alt="Tailwind"></span>
+                    <span class="tech-pill"><img src="./img/flutter.png" alt="Flutter"></span>
+                    <span class="tech-pill"><img src="./img/htmlcssjs.png" alt="HTML5"></span>
+                    <span class="tech-pill"><img src="./img/git.png" alt="Git"></span>
+                    <span class="tech-pill"><img src="./img/Laravel.png" alt="Filament"></span>
+                </div>
+
+                <!-- CTA -->
+                <div class="flex flex-wrap gap-3 pt-2">
+                    <a href="#projects" class="px-6 py-3.5 bg-brand-blue text-white hover:bg-brand-black font-bold text-xs uppercase tracking-widest transition-all border border-brand-black solid-shadow-sm flex items-center gap-2 group">
+                        Explore Works <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                    </a>
+                    <a href="#contact" class="px-6 py-3.5 bg-brand-white text-brand-black hover:bg-brand-black hover:text-white font-bold text-xs uppercase tracking-widest transition-all border border-brand-black solid-shadow-sm">
+                        Hubungi Saya
+                    </a>
+                </div>
+
+                <!-- Brand Logobar -->
+                <div class="pt-6 border-t border-brand-black/20">
+                    <p class="text-[9px] font-mono tracking-widest uppercase text-stone-500 mb-3 font-bold">Featured Brands & Studio</p>
+                    <div class="flex flex-wrap gap-x-6 gap-y-2 items-center">
+                        <span class="text-[11px] font-mono font-black tracking-widest text-brand-black hover:text-brand-blue transition-colors cursor-default">INDOTEKNISI</span>
+                        <span class="text-[11px] font-mono font-black tracking-widest text-brand-black hover:text-brand-blue transition-colors cursor-default">PT FATHFORCE</span>
+                        <span class="text-[11px] font-mono font-black tracking-widest text-brand-black hover:text-brand-blue transition-colors cursor-default">SIRUANG</span>
+                        <span class="text-[11px] font-mono font-black tracking-widest text-brand-black hover:text-brand-blue transition-colors cursor-default">RUMAHKOS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Portrait -->
+            <div class="lg:col-span-5 relative h-[320px] sm:h-[420px] md:h-[480px] flex items-center justify-center order-1 lg:order-2">
+                <div class="absolute inset-4 border border-dashed border-brand-black/20 pointer-events-none"></div>
+
+                <div class="w-52 sm:w-64 md:w-72 h-[270px] sm:h-[340px] md:h-[380px] bg-brand-white border-2 border-brand-black overflow-hidden relative solid-shadow-lg z-10">
+                    <img class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                         src="./img/im.png"
+                         alt="Surya Pratama Portrait"
+                         onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-blue/15 to-transparent pointer-events-none"></div>
+                </div>
+
+                <!-- Floating Sticker 1 -->
+                <div id="sticker-award" class="absolute top-4 -right-1 sm:-right-4 bg-brand-white border border-brand-black p-2.5 flex items-center gap-2 animate-float-1 cursor-grab active:cursor-grabbing select-none solid-shadow-sm z-20">
+                    <div class="w-7 h-7 bg-brand-blue flex items-center justify-center text-white shrink-0">
+                        <i data-lucide="award" class="w-3.5 h-3.5"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-[9px] font-display font-extrabold text-brand-black tracking-tight">INDOTEKNISI</h4>
+                        <p class="text-[8px] font-mono text-stone-500 uppercase">Active Dev</p>
+                    </div>
+                </div>
+
+                <!-- Floating Sticker 2 -->
+                <div id="sticker-expert" class="absolute bottom-10 sm:bottom-12 -left-1 sm:-left-6 bg-brand-white border border-brand-black p-2.5 flex items-center gap-2 animate-float-2 cursor-grab active:cursor-grabbing select-none solid-shadow-sm z-20">
+                    <div class="w-7 h-7 rounded-full bg-brand-black flex items-center justify-center text-white shrink-0">
+                        <i data-lucide="terminal" class="w-3 h-3 text-brand-blue"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-[9px] font-display font-extrabold text-brand-black tracking-tight uppercase">LARAVEL / PHP</h4>
+                        <p class="text-[8px] font-mono text-stone-500">Backend Architect</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===================== MARQUEE ===================== -->
+    <div class="w-full border-y-2 border-brand-black bg-brand-black text-brand-white py-3.5 overflow-hidden relative z-20">
+        <div class="flex whitespace-nowrap animate-marquee">
+            <span class="text-sm sm:text-base font-display uppercase tracking-widest mx-4 flex items-center gap-3">
+                SURYA PRATAMA <span class="text-brand-blue">★</span> SOFTWARE DEVELOPER <span class="text-brand-blue">★</span> INDOTEKNISI <span class="text-brand-blue">★</span> LARAVEL <span class="text-brand-blue">★</span> REKAYASA PERANGKAT LUNAK <span class="text-brand-blue">★</span>
+            </span>
+            <span class="text-sm sm:text-base font-display uppercase tracking-widest mx-4 flex items-center gap-3">
+                SURYA PRATAMA <span class="text-brand-blue">★</span> SOFTWARE DEVELOPER <span class="text-brand-blue">★</span> INDOTEKNISI <span class="text-brand-blue">★</span> LARAVEL <span class="text-brand-blue">★</span> REKAYASA PERANGKAT LUNAK <span class="text-brand-blue">★</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- ===================== SKILLS ===================== -->
+    <section id="services" class="py-14 md:py-24 px-4 md:px-12 max-w-7xl mx-auto border-b-2 border-brand-black">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
+
+            <!-- Left: Cards -->
+            <div class="lg:col-span-6 space-y-4">
+
+                <!-- Card 1: Backend -->
+                <div class="skill-card bg-brand-white p-5 border-2 border-brand-black solid-shadow flex gap-4 items-start">
+                    <div class="w-11 h-11 bg-amber-100 border border-brand-black flex items-center justify-center shrink-0">
+                        <i data-lucide="server" class="w-5 h-5 text-brand-blue"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-sm font-display font-extrabold uppercase text-brand-black">Backend System</h3>
+                        <div class="flex flex-wrap gap-1.5 mt-2 mb-2">
+                            <!-- Laravel logo pill inline -->
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 50 52" width="13" height="13" fill="none"><path d="M49.626 11.564a.809.809 0 01.028.209v10.972a.8.8 0 01-.402.694l-9.209 5.302-.032.018V39.25a.8.8 0 01-.402.694L20.42 51.01a.813.813 0 01-.119.048c-.025.008-.051.01-.076.017a.809.809 0 01-.232 0c-.028-.006-.057-.012-.084-.02a.79.79 0 01-.114-.044L.402 39.944A.8.8 0 010 39.25V6.334a.809.809 0 01.028-.209c.011-.048.03-.094.054-.138l.001-.002a.808.808 0 01.067-.112c.014-.02.031-.037.047-.056.015-.017.025-.037.041-.053a.803.803 0 01.18-.13L10.16.474a.8.8 0 01.8 0l9.741 5.617.03.018.03-.018L30.5.474a.8.8 0 01.8 0l9.748 5.621.029.017.03-.017 9.74-5.621a.8.8 0 01.8 0l9.741 5.617c.027.016.053.033.077.052.01.008.015.018.024.026.033.028.063.058.09.091a.83.83 0 01.051.067c.016.022.036.041.05.065.034.053.058.11.072.17l.002.008a.805.805 0 01.022.218z" fill="#FF2D20"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="13" height="13"><path d="M0 64c0 18.593 28.654 33.674 64 33.674 35.346 0 64-15.081 64-33.674 0-18.593-28.654-33.674-64-33.674C28.654 30.326 0 45.407 0 64z" fill="#777BB3"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="13" height="13"><path d="M116.948 97.807c-6.863-.187-12.104.452-16.585 2.341-1.273.537-3.305.552-3.513 2.147.7.733.809 1.829 1.365 2.731 1.07 1.73 2.876 4.052 4.488 5.268 1.762 1.33 3.572 2.751 5.465 3.902 3.359 2.047 7.115 3.217 10.336 5.268 1.906 1.21 3.799 2.733 5.658 4.097.92.675 1.537 1.724 2.732 2.147v-.194c-.628-.8-.79-1.898-1.366-2.733l-2.537-2.537c-2.48-3.292-5.629-6.184-8.976-8.585-2.669-1.916-8.642-4.504-9.759-7.708l-.195-.195c1.875-.214 4.074-.872 5.854-1.367 2.934-.786 5.556-.583 8.585-1.365l4.097-1.171v-.78c-1.531-1.571-2.622-3.659-4.292-5.073-4.37-3.72-9.138-7.437-14.048-10.528-2.724-1.718-6.089-2.835-8.976-4.292-.971-.491-2.677-.746-3.318-1.564-1.517-1.932-2.342-4.382-3.513-6.633-2.449-4.717-4.854-9.868-7.024-14.831-1.48-3.384-2.447-6.72-4.293-9.759-8.86-14.567-18.396-23.358-33.169-32-3.144-1.838-6.929-2.563-10.929-3.513-2.145-.129-4.291-.26-6.438-.391-1.311-.546-2.673-2.149-3.902-2.927C21.58 8.703 5.765.923.137 10.77c-3.476 6.064 2.087 12.016 3.903 15.02 1.302 2.108 2.973 4.485 3.902 6.828.602 1.528.698 3.059 1.366 4.681 1.411 3.41 2.622 7.173 4.487 10.335.94 1.618 1.978 3.317 3.122 4.781.718.918 1.979 1.332 2.147 2.731-1.211 1.695-1.281 4.304-1.952 6.438-3.048 9.607-1.899 21.564 2.537 28.683 1.36 2.186 4.567 6.871 8.975 5.073 3.856-1.57 2.995-6.438 4.098-10.726.249-.971.096-1.686.585-2.341v.195l3.513 7.024c2.6 4.187 7.212 8.562 11.122 11.514 2.027 1.531 3.623 4.177 6.244 5.073v-.196h-.195c-.508-.791-1.288-1.115-1.952-1.756-1.525-1.496-3.225-3.369-4.487-5.073-3.556-4.827-6.698-10.11-9.563-15.609-1.368-2.627-2.557-5.523-3.708-8.196-.444-1.03-.438-2.592-1.364-3.122-1.263 1.958-3.122 3.542-4.098 5.854-1.561 3.696-1.762 8.204-2.341 12.878-.341.122-.19.038-.391.194-2.718-.655-3.672-3.452-4.683-5.853-2.554-6.07-3.029-15.842-.781-22.829.582-1.809 3.21-7.501 2.146-9.172-.508-1.666-2.184-2.63-3.121-3.903-1.161-1.574-2.319-3.646-3.124-5.465-2.09-4.731-3.066-10.044-5.267-14.831-1.053-2.275-2.834-4.571-4.293-6.633-1.617-2.279-3.429-3.964-4.683-6.635-.445-.968-1.051-2.518-.39-3.513.21-.671.507-.95 1.171-1.17 1.133-.773 4.283.29 5.465.779 3.129 1.29 5.738 2.524 8.39 4.293 1.271.844 2.559 2.475 4.098 2.927h1.756c2.747.617 5.824.187 8.391.975 4.536 1.378 8.601 3.523 12.293 5.854 11.246 7.102 20.442 17.21 26.732 29.267 1.012 1.942 1.45 3.794 2.341 5.854 1.798 4.153 4.063 8.426 5.852 12.488 1.786 4.05 3.526 8.13 6.05 11.513 1.327 1.772 6.451 2.723 8.781 3.708 1.632.689 4.307 1.409 5.854 2.34 3.01 1.818 5.93 4.008 8.781 6.05 1.425 1.017 5.822 3.189 6.05 4.878z" fill="#00618A"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        </div>
+                        <p class="text-[11px] text-stone-500 leading-relaxed">Membangun arsitektur server yang andal, aman, terstruktur, serta integrasi dashboard administratif berbasis Filament.</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Frontend -->
+                <div class="skill-card bg-brand-white p-5 border-2 border-brand-black solid-shadow flex gap-4 items-start">
+                    <div class="w-11 h-11 bg-red-100 border border-brand-black flex items-center justify-center shrink-0">
+                        <i data-lucide="code" class="w-5 h-5 text-brand-blue"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-sm font-display font-extrabold uppercase text-brand-black">Frontend Web & Mobile</h3>
+                        <div class="flex flex-wrap gap-1.5 mt-2 mb-2">
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="13" height="13"><path fill="#E44D26" d="M19.037 113.876L9.032 1.001h109.936l-10.016 112.869-45.019 12.58z"/><path fill="#F16529" d="M64 116.8l36.378-10.086 8.559-95.878H64z"/><path fill="#EBEBEB" d="M64 52.455H45.788L44.53 38.361H64V24.599H29.489l.33 3.692 3.382 37.927H64zm0 35.743l-.061.017-15.327-4.14-.979-10.975H33.816l1.928 21.609 28.193 7.826.063-.017z"/><path fill="#fff" d="M63.952 52.455v13.763h16.947l-1.597 17.849-15.35 4.143v14.319l28.215-7.82.207-2.325 3.234-36.233.336-3.696h-3.708zm0-27.856v13.762h33.244l.276-3.092.628-6.978.329-3.692z"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="13" height="13"><path fill="#264de4" d="M19.037 113.876L9.032 1.001h109.936l-10.016 112.869-45.019 12.58z"/><path fill="#2965f1" d="M64 116.8l36.378-10.086 8.559-95.878H64z"/><path fill="#ebebeb" d="M64 66.359H49.012l-1.042-11.6H64V43.219H36.526l.289 3.244 2.956 33.101H64zm0 28.083l-.049.013-13.364-3.609-.856-9.576H38.327l1.681 18.864 24.011 6.666.014-.004z"/><path fill="#fff" d="M63.952 66.359v11.54h13.66l-1.285 14.378-12.375 3.613v11.988l24.018-6.666.176-1.987 2.764-30.945.293-3.92h-3.955zm0-23.14v11.54h26.82l.235-2.532.53-5.936.275-3.072z"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="13" height="13"><path d="M64.004 25.602c-17.067 0-27.73 8.53-32 25.597 6.398-8.531 13.867-11.73 22.398-9.597 4.871 1.214 8.352 4.746 12.207 8.66C72.883 56.629 80.145 64 96.004 64c17.066 0 27.73-8.531 32-25.602-6.399 8.536-13.867 11.735-22.399 9.602-4.87-1.215-8.347-4.746-12.207-8.66-6.27-6.367-13.53-13.738-29.394-13.738zM32.004 64c-17.066 0-27.73 8.531-32 25.602C6.402 81.066 13.87 77.867 22.402 80c4.871 1.215 8.352 4.746 12.207 8.66 6.274 6.367 13.536 13.738 29.395 13.738 17.066 0 27.73-8.53 32-25.597-6.399 8.531-13.867 11.73-22.399 9.597-4.87-1.214-8.347-4.745-12.207-8.66C55.128 71.371 47.868 64 32.004 64zm0 0" fill="#38BDF8"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="13" height="13"><path d="M12.3 64.2L76.3 0h39.4L32.1 83.6zM76.3 128h39.4L81.6 93.9l34.1-34.8H76.3L42.2 93.5z" fill="#54C5F8"/><path d="M81.6 93.9l-20-20-19.4 19.6 19.4 34.5z" fill="#01579B"/><path d="M61.6 73.9l20 20-20.4 20.5-19.6-34.9z" fill="#29B6F6"/></svg></span>
+                        </div>
+                        <p class="text-[11px] text-stone-500 leading-relaxed">Merancang antarmuka website responsif berkinerja tinggi serta pengembangan prototipe aplikasi mobile lintas platform.</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Tools -->
+                <div class="skill-card bg-brand-white p-5 border-2 border-brand-black solid-shadow flex gap-4 items-start">
+                    <div class="w-11 h-11 bg-emerald-100 border border-brand-black flex items-center justify-center shrink-0">
+                        <i data-lucide="clapperboard" class="w-5 h-5 text-brand-blue"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-sm font-display font-extrabold uppercase text-brand-black">Video Editor & Tools</h3>
+                        <div class="flex flex-wrap gap-1.5 mt-2 mb-2">
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 24 24" width="13" height="13" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="#0074BD" stroke-width="2"/><path d="M8 21h8M12 17v4" stroke="#0074BD" stroke-width="2" stroke-linecap="round"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 24 24" width="13" height="13" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="#217346" stroke-width="1.5"/><polyline points="14 2 14 8 20 8" stroke="#217346" stroke-width="1.5"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="13" height="13"><path fill="#F34F29" d="M124.742 58.378L69.625 3.261c-3.172-3.175-8.32-3.175-11.497 0L46.685 14.707l14.518 14.518c3.375-1.139 7.243-.375 9.932 2.314 2.703 2.706 3.461 6.607 2.294 9.993L87.785 55.89c3.385-1.167 7.289-.413 9.994 2.295 3.78 3.777 3.78 9.9 0 13.679a9.68 9.68 0 01-13.683 0 9.677 9.677 0 01-2.105-10.521L68.574 47.933l-.002 34.341a9.708 9.708 0 012.559 1.828c3.778 3.777 3.778 9.898 0 13.683-3.779 3.777-9.904 3.777-13.679 0-3.778-3.784-3.778-9.905 0-13.683a9.65 9.65 0 013.167-2.11V47.333a9.581 9.581 0 01-3.167-2.111c-2.862-2.86-3.551-7.06-2.083-10.576L41.056 20.333 3.264 58.123a8.133 8.133 0 000 11.5l55.117 55.114c3.172 3.174 8.32 3.174 11.499 0l54.858-54.858a8.135 8.135 0 00-.016-11.501z"/></svg></span>
+                        </div>
+                        <p class="text-[11px] text-stone-500 leading-relaxed">Penyusunan konten multimedia, dokumentasi teknis sistem, dan pelaporan administrasi perkantoran.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Info Copy -->
+            <div class="lg:col-span-6 space-y-6 lg:pl-8 lg:sticky lg:top-24">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-brand-black leading-none uppercase">
+                    Keahlian &amp; <br>
+                    <span class="text-brand-blue font-editorial italic font-normal normal-case tracking-normal">Kapabilitas</span>
+                </h2>
+                <div class="space-y-3 text-sm text-stone-700 leading-relaxed font-medium">
+                    <p>Berbekal pendidikan formal di rekayasa perangkat lunak, keikutsertaan dalam Kelas Industri di SMK Assalaam, serta pengalaman industri aktif.</p>
+                    <p>Didukung karakter softskill yang jujur, disiplin, bertanggung jawab, serta kemampuan berkomunikasi yang baik dalam kerja tim maupun individu.</p>
+                </div>
+
+                <!-- Full Tech Stack Grid -->
+                <div class="border-t border-brand-black/20 pt-5">
+                    <p class="text-[9px] font-mono tracking-widest uppercase text-stone-500 mb-3 font-bold">Full Tech Stack</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tech-pill"><img src="./img/Laravel.png" alt="Laravel"></span>
+                        <span class="tech-pill"><img src="./img/php.png" alt="PHP"></span>
+                        <span class="tech-pill"><img src="./img/mysql.png" alt="MySQL"></span>
+                        <span class="tech-pill"><img src="./img/htmlcssjs.png" alt="HTML/CSS/JS"></span>
+                        <span class="tech-pill"><img src="./img/flutter.png" alt="Flutter"></span>
+                        <span class="tech-pill"><img src="./img/git.png" alt="Git"></span>
+                        <span class="tech-pill"><img src="./img/laragon.png" alt="Laragon"></span>
+                        <span class="tech-pill"><img src="./img/postman.png" alt="Postman"></span>
+                        <span class="tech-pill"><img src="./img/vscode.png" alt="VS Code"></span>
+                        <span class="tech-pill"><img src="./img/claude.png" alt="Claude"></span>
+                        <span class="tech-pill"><img src="./img/chatgpt.png" alt="ChatGPT"></span>
+                        <span class="tech-pill"><img src="./img/activedevelop.png" alt="Active Dev"></span>
+                        <span class="tech-pill"><img src="./img/googleantigravity.png" alt="G.Gravity"></span>
+                    </div>
+                </div>
+
+                <a href="#contact" class="inline-block px-7 py-3 bg-brand-black text-white hover:bg-brand-blue font-bold text-xs uppercase tracking-widest border border-brand-black solid-shadow-sm transition-colors">
+                    Hubungi Saya
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== EXPERIENCE ===================== -->
+    <section id="experience" class="py-14 md:py-24 px-4 md:px-12 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+
+            <!-- Left: Timelines -->
+            <div class="lg:col-span-7 space-y-5">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-brand-black uppercase leading-[1.1]">
+                    Pengalaman <br>
+                    <span class="text-brand-blue font-editorial italic font-normal normal-case tracking-normal">Profesional & Industri</span>
+                </h2>
+
+                <!-- IndoTeknisi -->
+                <div class="p-5 bg-brand-white border-2 border-brand-blue solid-shadow hover:border-brand-black transition-colors">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-3 border-b border-brand-black/10">
+                        <div class="flex items-center gap-3">
+                            <img src="./img/indoteknisi.png" alt="IndoTeknisi Logo" class="h-8 w-auto max-w-[4rem] object-contain">
+                            <div>
+                                <h4 class="text-sm font-bold uppercase tracking-wider text-brand-blue flex items-center gap-1.5">
+                                    <span class="inline-block w-2 h-2 rounded-full bg-brand-blue animate-pulse"></span>
+                                    IndoTeknisi
+                                </h4>
+                                <p class="text-[10px] font-mono text-stone-500 uppercase">Software Developer</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-1 bg-brand-blue text-white text-[9px] font-mono font-bold uppercase tracking-wider whitespace-nowrap">2026 — Sekarang</span>
+                    </div>
+                    <p class="text-xs text-stone-600 mt-3 leading-relaxed">
+                        Bekerja aktif merancang, merawat, dan mengembangkan sistem software terintegrasi, optimasi backend, serta pengelolaan fungsionalitas web internal maupun client-side.
+                    </p>
+                </div>
+
+                <!-- PT Fathforce -->
+                <div class="p-5 bg-brand-white border-2 border-brand-black solid-shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-3 border-b border-brand-black/10">
+                        <div class="flex items-center gap-3">
+                            <img src="./img/Fathforce.png" alt="Fathforce Logo" class="h-8 w-auto max-w-[4rem] object-contain">
+                            <div>
+                                <h4 class="text-sm font-bold uppercase tracking-wider text-brand-blue">PT Fathforce</h4>
+                                <p class="text-[10px] font-mono text-stone-500 uppercase">PKL Eksternal — Fullstack Developer</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-1 bg-brand-black text-white text-[9px] font-mono font-bold uppercase whitespace-nowrap">Sep–Nov 2025</span>
+                    </div>
+                    <p class="text-xs text-stone-600 mt-3 leading-relaxed">Mengembangkan berbagai website komersial dan sistem aplikasi berorientasi industri:</p>
+                    <ul class="list-disc list-inside text-xs text-stone-600 mt-2 space-y-1 pl-1">
+                        <li><span class="font-bold">Roolskool</span> — Platform Website Sepatu Roda</li>
+                        <li><span class="font-bold">Lampegan Motor Bdg</span> — Sistem Showroom Motor</li>
+                        <li><span class="font-bold">Muda Juara Super Apps</span> — Web Aplikasi Organisasi</li>
+                        <li><span class="font-bold">Gransunshine</span> — Web Portal Perhotelan</li>
+                    </ul>
+                </div>
+
+                <!-- SMK Internal -->
+                <div class="p-5 bg-brand-white border-2 border-brand-black solid-shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-3 border-b border-brand-black/10">
+                        <div class="flex items-center gap-3">
+                            <img src="./img/smkassalaambandung.png" alt="SMK Assalaam" class="h-8 w-auto max-w-[4rem] object-contain">
+                            <div>
+                                <h4 class="text-sm font-bold uppercase tracking-wider text-brand-blue">SMK Assalaam Bandung</h4>
+                                <p class="text-[10px] font-mono text-stone-500 uppercase">PKL Internal — Website Developer</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-1 bg-brand-black text-white text-[9px] font-mono font-bold uppercase whitespace-nowrap">Juni 2025</span>
+                    </div>
+                    <p class="text-xs text-stone-600 mt-3 leading-relaxed">
+                        Merancang dan mengembangkan sistem informasi booking online ruangan kelas dan laboratorium sekolah bernama <span class="font-bold text-brand-blue">Siruang</span>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right: Portrait -->
+            <div class="lg:col-span-5 relative h-[300px] sm:h-[400px] flex items-center justify-center">
+                <div class="absolute inset-4 border border-dashed border-brand-black/20 pointer-events-none"></div>
+                <div class="w-56 sm:w-64 h-[270px] sm:h-[320px] bg-brand-white border-2 border-brand-black overflow-hidden relative solid-shadow-lg z-10">
+                    <img class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                         src="./img/im.png"
+                         alt="Surya Pratama Experience"
+                         onerror="this.src='https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80'">
+                </div>
+                <div class="absolute bottom-4 sm:bottom-6 left-2 sm:left-4 bg-brand-white border border-brand-black p-2.5 flex items-center gap-2.5 solid-shadow-sm animate-float-3 z-20">
+                    <div class="w-7 h-7 rounded-full bg-brand-blue text-white flex items-center justify-center">
+                        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-[9px] font-display font-extrabold text-brand-black uppercase">Active Software Dev</h4>
+                        <p class="text-[8px] font-mono text-stone-500">Sistem Respons Cepat</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== GITHUB WIDGET ===================== -->
+    <section id="dashboard" class="py-14 md:py-24 px-4 md:px-12 max-w-7xl mx-auto border-t-2 border-brand-black bg-brand-white">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+
+            <!-- GitHub Widget -->
+            <div class="lg:col-span-6 relative">
+                <div class="bg-brand-paper border-2 border-brand-black p-5 relative z-10 space-y-5 solid-shadow-lg">
+                    <div class="flex items-center justify-between border-b border-brand-black pb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 bg-brand-black flex items-center justify-center text-white border border-brand-black">
+                                <i data-lucide="github" class="w-4 h-4 text-brand-blue"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-display font-extrabold text-brand-black uppercase">GitHub Live Engine</h4>
+                                <p class="text-[8px] font-mono text-stone-500">REAL-TIME DATA</p>
+                            </div>
+                        </div>
+                        <span class="flex items-center gap-1.5 px-2 py-1 bg-brand-blue text-white text-[8px] font-mono font-bold uppercase animate-pulse">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Live
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-3 bg-brand-white border border-brand-black p-3">
+                        <img id="gh-avatar" class="w-11 h-11 border border-brand-black grayscale" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="GitHub Avatar">
+                        <div>
+                            <h5 id="gh-name" class="text-xs font-display font-extrabold text-brand-black uppercase">Surya Pratama</h5>
+                            <a href="https://github.com/bangsuryapratama" target="_blank" class="text-[9px] font-mono text-brand-blue hover:underline">@bangsuryapratama</a>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-brand-white p-3 border border-brand-black">
+                            <span class="text-[8px] font-mono text-stone-500 block uppercase font-bold">Public Repos</span>
+                            <span id="gh-repos-count" class="text-xl font-display font-extrabold text-brand-black">--</span>
+                        </div>
+                        <div class="bg-brand-white p-3 border border-brand-black">
+                            <span class="text-[8px] font-mono text-stone-500 block uppercase font-bold">Followers</span>
+                            <span id="gh-followers-count" class="text-xl font-display font-extrabold text-brand-black">--</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-white border border-brand-black p-4">
+                        <span class="text-[9px] font-mono text-brand-black block uppercase font-bold border-b border-brand-black/10 pb-2 mb-3">Repositori Terbaru:</span>
+                        <div id="gh-latest-repos" class="space-y-2">
+                            <div class="animate-pulse space-y-2">
+                                <div class="h-2 bg-stone-200 rounded"></div>
+                                <div class="h-2 bg-stone-200 rounded w-5/6"></div>
+                                <div class="h-2 bg-stone-200 rounded w-4/6"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Copy -->
+            <div class="lg:col-span-6 space-y-5 lg:pl-8">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-extrabold text-brand-black uppercase leading-none">
+                    Solusi Terpadu <br>
+                    <span class="text-brand-blue font-editorial italic font-normal normal-case tracking-normal">Untuk Setiap Sistem</span>
+                </h2>
+                <div class="space-y-3 text-sm text-stone-700 leading-relaxed font-medium">
+                    <p>Integrasi database yang bersih, manajemen hak akses multi-role (Admin, Guru, Siswa), hingga integrasi notifikasi penjadwalan dinamis.</p>
+                    <p>Saya merancang aplikasi tidak sekadar terlihat estetik di mata, melainkan siap menyelesaikan alur rumit fungsionalitas bisnis demi kelancaran operasional harian.</p>
+                </div>
+                <div class="pt-4 border-t border-brand-black/10">
+                    <p class="text-[9px] font-mono tracking-widest uppercase text-stone-500 mb-2 font-bold">Riwayat Pendidikan</p>
+                    <p class="text-sm text-brand-black font-bold">SMK Assalaam Bandung (Jurusan RPL) — 2023–2026</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== PROJECTS ===================== -->
+    <section id="projects" class="py-14 md:py-24 px-4 md:px-12 max-w-7xl mx-auto border-t-2 border-brand-black">
+        <div class="text-center space-y-3 mb-12">
+            <h2 class="text-3xl sm:text-5xl font-display font-extrabold text-brand-black uppercase">Flagship Projects</h2>
+            <p class="text-stone-600 text-sm max-w-md mx-auto font-medium">Karya-karya pribadi yang dikembangkan secara mandiri.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Project 1 -->
+            <div class="group border-2 border-brand-black bg-brand-white hover:solid-shadow-blue transition-all duration-300 flex flex-col solid-shadow">
+                <div class="relative bg-brand-light border-b-2 border-brand-black overflow-hidden">
+                    <img class="w-full h-auto grayscale group-hover:grayscale-0 transition-all duration-500"
+                         src="./img/siruang_web.png"
+                         alt="Siruang"
+                         onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'">
+                    <span class="absolute top-3 left-3 px-2 py-1 border border-brand-black bg-brand-white text-[8px] font-mono font-bold uppercase">BOOKING SYSTEM</span>
+                    <span class="absolute top-3 right-3 px-2 py-1 bg-brand-blue text-white text-[8px] font-mono font-bold uppercase">PERSONAL WORK</span>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-display font-extrabold text-brand-black group-hover:text-brand-blue transition-colors uppercase">Siruang — Booking Ruang Kelas & Lab</h3>
+                        <p class="text-xs text-stone-600 mt-2 leading-relaxed">Sistem manajemen pemesanan dan pemakaian fasilitas ruang kelas serta laboratorium secara online terpadu.</p>
+                        <div class="flex flex-wrap gap-1.5 mt-3">
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 50 52" width="11" height="11" fill="none"><path d="M49.626 11.564a.809.809 0 01.028.209v10.972a.8.8 0 01-.402.694l-9.209 5.302-.032.018V39.25a.8.8 0 01-.402.694L20.42 51.01a.813.813 0 01-.119.048c-.025.008-.051.01-.076.017a.809.809 0 01-.232 0c-.028-.006-.057-.012-.084-.02a.79.79 0 01-.114-.044L.402 39.944A.8.8 0 010 39.25V6.334a.809.809 0 01.028-.209c.011-.048.03-.094.054-.138l.001-.002a.808.808 0 01.067-.112c.014-.02.031-.037.047-.056.015-.017.025-.037.041-.053a.803.803 0 01.18-.13L10.16.474a.8.8 0 01.8 0l9.741 5.617.03.018.03-.018L30.5.474a.8.8 0 01.8 0l9.748 5.621.029.017.03-.017 9.74-5.621a.8.8 0 01.8 0l9.741 5.617c.027.016.053.033.077.052.01.008.015.018.024.026.033.028.063.058.09.091a.83.83 0 01.051.067c.016.022.036.041.05.065.034.053.058.11.072.17l.002.008a.805.805 0 01.022.218z" fill="#FF2D20"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="11" height="11"><path d="M116.948 97.807c-6.863-.187-12.104.452-16.585 2.341-1.273.537-3.305.552-3.513 2.147.7.733.809 1.829 1.365 2.731 1.07 1.73 2.876 4.052 4.488 5.268 1.762 1.33 3.572 2.751 5.465 3.902 3.359 2.047 7.115 3.217 10.336 5.268 1.906 1.21 3.799 2.733 5.658 4.097.92.675 1.537 1.724 2.732 2.147v-.194c-.628-.8-.79-1.898-1.366-2.733l-2.537-2.537c-2.48-3.292-5.629-6.184-8.976-8.585-2.669-1.916-8.642-4.504-9.759-7.708l-.195-.195c1.875-.214 4.074-.872 5.854-1.367 2.934-.786 5.556-.583 8.585-1.365l4.097-1.171v-.78c-1.531-1.571-2.622-3.659-4.292-5.073-4.37-3.72-9.138-7.437-14.048-10.528-2.724-1.718-6.089-2.835-8.976-4.292-.971-.491-2.677-.746-3.318-1.564-1.517-1.932-2.342-4.382-3.513-6.633-2.449-4.717-4.854-9.868-7.024-14.831-1.48-3.384-2.447-6.72-4.293-9.759-8.86-14.567-18.396-23.358-33.169-32-3.144-1.838-6.929-2.563-10.929-3.513-2.145-.129-4.291-.26-6.438-.391-1.311-.546-2.673-2.149-3.902-2.927C21.58 8.703 5.765.923.137 10.77c-3.476 6.064 2.087 12.016 3.903 15.02 1.302 2.108 2.973 4.485 3.902 6.828.602 1.528.698 3.059 1.366 4.681 1.411 3.41 2.622 7.173 4.487 10.335.94 1.618 1.978 3.317 3.122 4.781.718.918 1.979 1.332 2.147 2.731-1.211 1.695-1.281 4.304-1.952 6.438-3.048 9.607-1.899 21.564 2.537 28.683 1.36 2.186 4.567 6.871 8.975 5.073 3.856-1.57 2.995-6.438 4.098-10.726.249-.971.096-1.686.585-2.341v.195l3.513 7.024c2.6 4.187 7.212 8.562 11.122 11.514 2.027 1.531 3.623 4.177 6.244 5.073v-.196h-.195c-.508-.791-1.288-1.115-1.952-1.756-1.525-1.496-3.225-3.369-4.487-5.073-3.556-4.827-6.698-10.11-9.563-15.609-1.368-2.627-2.557-5.523-3.708-8.196-.444-1.03-.438-2.592-1.364-3.122-1.263 1.958-3.122 3.542-4.098 5.854-1.561 3.696-1.762 8.204-2.341 12.878-.341.122-.19.038-.391.194-2.718-.655-3.672-3.452-4.683-5.853-2.554-6.07-3.029-15.842-.781-22.829.582-1.809 3.21-7.501 2.146-9.172-.508-1.666-2.184-2.63-3.121-3.903-1.161-1.574-2.319-3.646-3.124-5.465-2.09-4.731-3.066-10.044-5.267-14.831-1.053-2.275-2.834-4.571-4.293-6.633-1.617-2.279-3.429-3.964-4.683-6.635-.445-.968-1.051-2.518-.39-3.513.21-.671.507-.95 1.171-1.17 1.133-.773 4.283.29 5.465.779 3.129 1.29 5.738 2.524 8.39 4.293 1.271.844 2.559 2.475 4.098 2.927h1.756c2.747.617 5.824.187 8.391.975 4.536 1.378 8.601 3.523 12.293 5.854 11.246 7.102 20.442 17.21 26.732 29.267 1.012 1.942 1.45 3.794 2.341 5.854 1.798 4.153 4.063 8.426 5.852 12.488 1.786 4.05 3.526 8.13 6.05 11.513 1.327 1.772 6.451 2.723 8.781 3.708 1.632.689 4.307 1.409 5.854 2.34 3.01 1.818 5.93 4.008 8.781 6.05 1.425 1.017 5.822 3.189 6.05 4.878z" fill="#00618A"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="11" height="11"><path d="M64.004 25.602c-17.067 0-27.73 8.53-32 25.597 6.398-8.531 13.867-11.73 22.398-9.597 4.871 1.214 8.352 4.746 12.207 8.66C72.883 56.629 80.145 64 96.004 64c17.066 0 27.73-8.531 32-25.602-6.399 8.536-13.867 11.735-22.399 9.602-4.87-1.215-8.347-4.746-12.207-8.66-6.27-6.367-13.53-13.738-29.394-13.738zM32.004 64c-17.066 0-27.73 8.531-32 25.602C6.402 81.066 13.87 77.867 22.402 80c4.871 1.215 8.352 4.746 12.207 8.66 6.274 6.367 13.536 13.738 29.395 13.738 17.066 0 27.73-8.53 32-25.597-6.399 8.531-13.867 11.73-22.399 9.597-4.87-1.214-8.347-4.745-12.207-8.66C55.128 71.371 47.868 64 32.004 64zm0 0" fill="#38BDF8"/></svg></span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-brand-black/10 mt-4 pt-3">
+                        <span class="text-[9px] font-mono text-stone-400 font-bold uppercase">Laravel / MySQL / Tailwind</span>
+                        <a href="#contact" class="w-7 h-7 rounded-full border border-brand-black flex items-center justify-center hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-all">
+                            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div class="group border-2 border-brand-black bg-brand-white hover:solid-shadow-blue transition-all duration-300 flex flex-col solid-shadow">
+                <div class="relative bg-brand-light border-b-2 border-brand-black overflow-hidden">
+                    <img class="w-full h-auto grayscale group-hover:grayscale-0 transition-all duration-500"
+                         src="./img/rumahkos_web.png"
+                         alt="RumahKos"
+                         onerror="this.src='https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800&q=80'">
+                    <span class="absolute top-3 left-3 px-2 py-1 border border-brand-black bg-brand-white text-[8px] font-mono font-bold uppercase">MANAGEMENT</span>
+                    <span class="absolute top-3 right-3 px-2 py-1 bg-brand-blue text-white text-[8px] font-mono font-bold uppercase">PERSONAL WORK</span>
+                </div>
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-display font-extrabold text-brand-black group-hover:text-brand-blue transition-colors uppercase">RumahKos — Sistem Manajemen Kos</h3>
+                        <p class="text-xs text-stone-600 mt-2 leading-relaxed">Web aplikasi untuk mengelola seluruh ekosistem rumah kos, mencakup status ketersediaan kamar, penagihan pembayaran berkala, pencatatan data penghuni.</p>
+                        <div class="flex flex-wrap gap-1.5 mt-3">
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="11" height="11"><path d="M0 64c0 18.593 28.654 33.674 64 33.674 35.346 0 64-15.081 64-33.674 0-18.593-28.654-33.674-64-33.674C28.654 30.326 0 45.407 0 64z" fill="#777BB3"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 50 52" width="11" height="11" fill="none"><path d="M49.626 11.564a.809.809 0 01.028.209v10.972a.8.8 0 01-.402.694l-9.209 5.302-.032.018V39.25a.8.8 0 01-.402.694L20.42 51.01a.813.813 0 01-.119.048c-.025.008-.051.01-.076.017a.809.809 0 01-.232 0c-.028-.006-.057-.012-.084-.02a.79.79 0 01-.114-.044L.402 39.944A.8.8 0 010 39.25V6.334a.809.809 0 01.028-.209c.011-.048.03-.094.054-.138l.001-.002a.808.808 0 01.067-.112c.014-.02.031-.037.047-.056.015-.017.025-.037.041-.053a.803.803 0 01.18-.13L10.16.474a.8.8 0 01.8 0l9.741 5.617.03.018.03-.018L30.5.474a.8.8 0 01.8 0l9.748 5.621.029.017.03-.017 9.74-5.621a.8.8 0 01.8 0l9.741 5.617c.027.016.053.033.077.052.01.008.015.018.024.026.033.028.063.058.09.091a.83.83 0 01.051.067c.016.022.036.041.05.065.034.053.058.11.072.17l.002.008a.805.805 0 01.022.218z" fill="#FF2D20"/></svg></span>
+                            <span class="tech-pill" >
+                                <svg viewBox="0 0 128 128" width="11" height="11"><path d="M19 106L10 10h108L109 106 64 118z" fill="#563D7C"/><path d="M64 114l36-10 8-90H64z" fill="#6F42C1"/><path d="M64 50H45l-1-12h20V26H32l3 38h29zm0 33l-15-4-1-11H36l2 22 26 7z" fill="#fff"/><path d="M63 50v12h14l-1 18-13 4v13l24-7 1-2 3-38H63zm0-24v12h27l1-12z" fill="#fff" opacity=".85"/></svg></span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-brand-black/10 mt-4 pt-3">
+                        <span class="text-[9px] font-mono text-stone-400 font-bold uppercase">PHP / Laravel / Bootstrap</span>
+                        <a href="#contact" class="w-7 h-7 rounded-full border border-brand-black flex items-center justify-center hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-all">
+                            <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="mt-8 group border-2 border-brand-black bg-brand-white hover:solid-shadow-blue transition-all duration-300 flex flex-col solid-shadow">
+            <div class="relative bg-brand-light border-b-2 border-brand-black overflow-hidden">
+                <img class="w-full h-auto grayscale group-hover:grayscale-0 transition-all duration-500"
+                     src="./img/indoteknisi_web.png"
+                     alt="IndoTeknisi Web"
+                     onerror="this.src='https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&w=800&q=80'">
+                <span class="absolute top-3 left-3 px-2 py-1 border border-brand-black bg-brand-white text-[8px] font-mono font-bold uppercase">COMPANY PROFILE & SYSTEM</span>
+                <span class="absolute top-3 right-3 px-2 py-1 bg-brand-blue text-white text-[8px] font-mono font-bold uppercase">PROFESSIONAL WORK</span>
+            </div>
+            <div class="p-5 flex-1 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-display font-extrabold text-brand-black group-hover:text-brand-blue transition-colors uppercase">IndoTeknisi — Sistem & Web Perusahaan</h3>
+                    <p class="text-xs text-stone-600 mt-2 leading-relaxed">Pengembangan website profil perusahaan dan integrasi sistem pengelolaan internal.</p>
+                </div>
+                <div class="flex justify-between items-center border-t border-brand-black/10 mt-4 pt-3">
+                    <span class="text-[9px] font-mono text-stone-400 font-bold uppercase">Laravel / Tailwind / MySQL</span>
+                    <a href="#contact" class="w-7 h-7 rounded-full border border-brand-black flex items-center justify-center hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-all">
+                        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collaborative Projects -->
+        <div class="mt-10 bg-brand-white p-5 border-2 border-brand-black solid-shadow">
+            <h4 class="text-xs font-display font-extrabold uppercase text-brand-blue border-b border-brand-black pb-2 mb-4">Proyek Kolaboratif (PT Fathforce)</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-4 border border-brand-black/10 bg-brand-paper hover:border-brand-blue transition-colors">
+                    <h5 class="text-xs font-bold text-brand-black uppercase flex items-center justify-between">
+                        <span>Roolskool</span>
+                        <span class="text-[8px] px-1.5 py-0.5 bg-brand-blue text-white uppercase font-mono">WEB</span>
+                    </h5>
+                    <p class="text-[11px] text-stone-500 mt-2 leading-relaxed">Platform portal komunitas, pelatihan, dan penjualan sepatu roda.</p>
+                </div>
+                <div class="p-4 border border-brand-black/10 bg-brand-paper hover:border-brand-blue transition-colors">
+                    <h5 class="text-xs font-bold text-brand-black uppercase flex items-center justify-between">
+                        <span>Lampegan Motor</span>
+                        <span class="text-[8px] px-1.5 py-0.5 bg-brand-black text-white uppercase font-mono">SHOWROOM</span>
+                    </h5>
+                    <p class="text-[11px] text-stone-500 mt-2 leading-relaxed">Website modern katalog digital & penjualan showroom motor Bandung.</p>
+                </div>
+                <div class="p-4 border border-brand-black/10 bg-brand-paper hover:border-brand-blue transition-colors">
+                    <h5 class="text-xs font-bold text-brand-black uppercase flex items-center justify-between">
+                        <span>Muda Juara Apps</span>
+                        <span class="text-[8px] px-1.5 py-0.5 bg-brand-black text-white uppercase font-mono">SUPER APP</span>
+                    </h5>
+                    <p class="text-[11px] text-stone-500 mt-2 leading-relaxed">Sistem aplikasi organisasi kepemudaan dengan manajemen dinamis.</p>
+                </div>
+                <div class="p-4 border border-brand-black/10 bg-brand-paper hover:border-brand-blue transition-colors">
+                    <h5 class="text-xs font-bold text-brand-black uppercase flex items-center justify-between">
+                        <span>Gransunshine</span>
+                        <span class="text-[8px] px-1.5 py-0.5 bg-brand-black text-white uppercase font-mono">PORTAL</span>
+                    </h5>
+                    <p class="text-[11px] text-stone-500 mt-2 leading-relaxed">Portal hotel, reservasi kamar, dan modul administrasi internal.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== CONTACT ===================== -->
+    <section id="contact" class="py-14 md:py-24 px-4 md:px-12 max-w-7xl mx-auto border-t-2 border-brand-black bg-brand-paper">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-10 items-center">
+            <div class="md:col-span-8 space-y-4">
+                <h2 class="text-3xl sm:text-5xl lg:text-6xl font-display font-extrabold text-brand-black uppercase leading-none">
+                    Siap Memulai <br>Kolaborasi?
+                </h2>
+                <p class="text-stone-600 text-sm max-w-md font-medium leading-relaxed">
+                    Tertarik dengan implementasi Siruang, RumahKos, atau ingin membangun platform custom? Let's talk!
+                </p>
+                <div class="pt-3 space-y-2 text-xs font-mono text-brand-black font-bold">
+                    <p class="flex items-center gap-2 flex-wrap"><i data-lucide="mail" class="w-4 h-4 text-brand-blue shrink-0"></i> bangsuryapratama@gmail.com</p>
+                    <p class="flex items-center gap-2">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-brand-blue shrink-0">
+                            <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5A4.25 4.25 0 0 0 20.5 16.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5Zm8.5 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm-4.25 1.75a4.75 4.75 0 1 1 0 9.5 4.75 4.75 0 0 1 0-9.5Zm0 1.5a3.25 3.25 0 1 0 0 6.5 3.25 3.25 0 0 0 0-6.5Z"/>
+                        </svg>
+                        @hellbangsur._
+                    </p>
+                    <p class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-brand-blue shrink-0"></i> Bandung, Jawa Barat</p>
+                </div>
+            </div>
+            <div class="md:col-span-4 flex justify-start md:justify-end">
+                <button onclick="toggleFormModal()" class="w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-brand-blue text-white hover:bg-brand-black hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center text-center border border-brand-black solid-shadow font-display font-extrabold text-xs tracking-widest uppercase">
+                    <span>Shoot</span>
+                    <span>Message</span>
+                    <i data-lucide="arrow-up-right" class="w-4 h-4 mt-1"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== CONTACT MODAL ===================== -->
+    <div id="contact-modal" class="hidden fixed inset-0 z-50 bg-brand-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-brand-white border-2 border-brand-black p-6 w-full max-w-lg solid-shadow-lg relative">
+            <button onclick="toggleFormModal()" class="absolute top-4 right-4 text-brand-black hover:text-brand-blue">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-xl font-display font-extrabold text-brand-black uppercase mb-5 border-b-2 border-brand-black pb-2">Kirim Sinyal Pesan</h3>
+            <form id="contact-form" onsubmit="event.preventDefault(); submitForm();" class="space-y-4">
+                <div>
+                    <label for="name" class="block text-[10px] font-mono uppercase tracking-widest text-stone-500 mb-1">Nama Lengkap //</label>
+                    <input type="text" id="name" required class="w-full bg-brand-paper border border-brand-black px-4 py-2.5 text-brand-black outline-none focus:border-brand-blue transition-all text-sm" placeholder="John Doe">
+                </div>
+                <div>
+                    <label for="email" class="block text-[10px] font-mono uppercase tracking-widest text-stone-500 mb-1">Alamat Email //</label>
+                    <input type="email" id="email" required class="w-full bg-brand-paper border border-brand-black px-4 py-2.5 text-brand-black outline-none focus:border-brand-blue transition-all text-sm" placeholder="john@example.com">
+                </div>
+                <div>
+                    <label for="message" class="block text-[10px] font-mono uppercase tracking-widest text-stone-500 mb-1">Ide / Konsep Proyek //</label>
+                    <textarea id="message" required rows="4" class="w-full bg-brand-paper border border-brand-black px-4 py-2.5 text-brand-black outline-none focus:border-brand-blue transition-all resize-none text-sm" placeholder="Ceritakan sistem atau website yang ingin Anda bangun..."></textarea>
+                </div>
+                <button type="submit" class="w-full py-3 bg-brand-blue text-white hover:bg-brand-black font-bold uppercase text-xs tracking-widest border border-brand-black transition-colors">
+                    Kirim Sinyal Pesan
+                </button>
+            </form>
+            <div id="status-toast" class="hidden mt-4 p-3 text-center text-[10px] font-mono uppercase tracking-wider"></div>
+        </div>
+    </div>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="border-t-2 border-brand-black py-10 px-4 md:px-12 bg-brand-white">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-stone-500">
+            <p>&copy; <span id="year"></span> SURYA PRATAMA. Built with NYC Brutalism.</p>
+            <div class="flex gap-5 items-center">
+                <a href="https://github.com/bangsuryapratama" target="_blank" class="hover:text-brand-blue transition-colors uppercase flex items-center gap-1.5">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> GITHUB
+                </a>
+                <span class="text-stone-300">|</span>
+                <a href="https://instagram.com/hellbangsur._" target="_blank" class="hover:text-brand-blue transition-colors uppercase flex items-center gap-1.5">
+                    <i data-lucide="instagram" class="w-3.5 h-3.5"></i> INSTAGRAM
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===================== SCRIPTS ===================== -->
+    <script>
+        lucide.createIcons();
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // ---- Custom Cursor ----
+        const cursor = document.getElementById('cursor');
+        const cursorRing = document.getElementById('cursor-ring');
+        let mouseX=0, mouseY=0, ringX=0, ringY=0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
+        });
+        function animateRing() {
+            ringX += (mouseX - ringX) * 0.15;
+            ringY += (mouseY - ringY) * 0.15;
+            cursorRing.style.left = ringX + 'px'; cursorRing.style.top = ringY + 'px';
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        document.querySelectorAll('a, button, .skill-card, [id^="sticker-"]').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorRing.style.transform = 'translate(-50%,-50%) scale(1.4)';
+                cursorRing.style.borderColor = '#0029FF';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorRing.style.transform = 'translate(-50%,-50%) scale(1)';
+                cursorRing.style.borderColor = '#0A0A0A';
+            });
+        });
+
+        // ---- Mobile Nav ----
+        const mobileTrigger = document.getElementById('mobile-nav-trigger');
+        const mobileClose   = document.getElementById('mobile-nav-close');
+        const mobileMenu    = document.getElementById('mobile-menu');
+        mobileTrigger.addEventListener('click', () => mobileMenu.classList.remove('hidden'));
+        mobileClose.addEventListener('click',   () => mobileMenu.classList.add('hidden'));
+        document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+
+        // ---- Contact Modal ----
+        function toggleFormModal() {
+            document.getElementById('contact-modal').classList.toggle('hidden');
+        }
+
+        // ---- Draggable Stickers ----
+        function makeStickerDraggable(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            let p1=0, p2=0, p3=0, p4=0;
+
+            el.onmousedown = start; el.ontouchstart = start;
+            function start(e) {
+                if (e.type !== 'touchstart') e.preventDefault();
+                el.style.animation = 'none'; el.style.zIndex = '40';
+                p3 = e.touches ? e.touches[0].clientX : e.clientX;
+                p4 = e.touches ? e.touches[0].clientY : e.clientY;
+                document.onmouseup = stop; document.onmousemove = move;
+                document.ontouchend = stop; document.ontouchmove = move;
+            }
+            function move(e) {
+                const cx = e.touches ? e.touches[0].clientX : e.clientX;
+                const cy = e.touches ? e.touches[0].clientY : e.clientY;
+                p1 = p3 - cx; p2 = p4 - cy; p3 = cx; p4 = cy;
+                const t = el.offsetTop - p2; const l = el.offsetLeft - p1;
+                if (t > 0 && t < window.innerHeight - 80) el.style.top = t + 'px';
+                if (l > 0 && l < window.innerWidth - 120) el.style.left = l + 'px';
+            }
+            function stop() {
+                document.onmouseup = null; document.onmousemove = null;
+                document.ontouchend = null; document.ontouchmove = null;
+            }
+        }
+        makeStickerDraggable('sticker-award');
+        makeStickerDraggable('sticker-expert');
+
+        // ---- Form Submit ----
+        function submitForm() {
+            const name = document.getElementById('name').value;
+            const toast = document.getElementById('status-toast');
+            toast.textContent = "Mengirim pesan...";
+            toast.className = "mt-4 p-3 text-center text-[10px] font-mono uppercase tracking-wider block bg-brand-blue text-white border border-brand-black animate-pulse";
+            setTimeout(() => {
+                toast.textContent = `✦ Halo ${name}! Sinyal pesan Anda terkirim.`;
+                toast.className = "mt-4 p-3 text-center text-[10px] font-mono uppercase tracking-wider block bg-emerald-500 text-white border border-brand-black";
+                document.getElementById('contact-form').reset();
+                setTimeout(() => { toggleFormModal(); toast.classList.add('hidden'); }, 2000);
+            }, 1200);
+        }
+
+        // ---- GitHub API ----
+        async function fetchGitHubData() {
+            const username = 'bangsuryapratama';
+            const reposContainer = document.getElementById('gh-latest-repos');
+            try {
+                const [userRes, reposRes] = await Promise.all([
+                    fetch(`https://api.github.com/users/${username}`),
+                    fetch(`https://api.github.com/users/${username}/repos?sort=pushed&per_page=3`)
+                ]);
+                if (!userRes.ok) throw new Error('API fail');
+                const userData = await userRes.json();
+                document.getElementById('gh-avatar').src = userData.avatar_url;
+                document.getElementById('gh-name').textContent = userData.name || userData.login;
+                document.getElementById('gh-repos-count').textContent = userData.public_repos;
+                document.getElementById('gh-followers-count').textContent = userData.followers;
+
+                const reposData = await reposRes.json();
+                reposContainer.innerHTML = '';
+                if (!reposData.length) { reposContainer.innerHTML = `<p class="text-stone-500 text-xs">Belum ada repositori publik.</p>`; return; }
+                reposData.forEach(repo => {
+                    const el = document.createElement('div');
+                    el.className = 'p-2.5 bg-brand-paper border border-brand-black flex flex-col gap-1';
+                    el.innerHTML = `
+                        <div class="flex justify-between items-start gap-2">
+                            <span class="font-display font-bold text-brand-black uppercase tracking-tight text-xs truncate">${repo.name}</span>
+                            <span class="text-[8px] font-mono px-1.5 py-0.5 bg-brand-blue text-white uppercase shrink-0">${repo.language || 'Code'}</span>
+                        </div>
+                        <p class="text-[10px] text-stone-600 line-clamp-1">${repo.description || 'Tidak ada deskripsi.'}</p>
+                        <div class="flex justify-between text-[9px] font-mono pt-1 border-t border-brand-black/5">
+                            <span class="text-stone-400">★ ${repo.stargazers_count}</span>
+                            <a href="${repo.html_url}" target="_blank" class="text-brand-blue hover:underline font-bold">LINK ↗</a>
+                        </div>`;
+                    reposContainer.appendChild(el);
+                });
+            } catch {
+                document.getElementById('gh-repos-count').textContent = '12';
+                document.getElementById('gh-followers-count').textContent = '5';
+                reposContainer.innerHTML = `<div class="p-2.5 bg-brand-paper border border-brand-black text-xs font-bold text-brand-black">siruang <span class="text-stone-500 font-normal">— Sistem booking kelas</span></div>`;
+            }
+        }
+        window.addEventListener('DOMContentLoaded', fetchGitHubData);
+    </script>
+</body>
+</html>
